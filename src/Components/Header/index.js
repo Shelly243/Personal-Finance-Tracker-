@@ -3,7 +3,7 @@ import './style.css'
 
 function Header() {
   return (
-    <div>hloo</div>
+    <div className="navbar">hloo</div>
   )
 }
 

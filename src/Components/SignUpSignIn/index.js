@@ -12,6 +12,7 @@ function SignUpSignIn() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading,setLoading] = useState(false);
+  const [loginForm, setLoginForm] = useState('false');
 
   function signupWithEmail(){
     setLoading(true);
@@ -34,6 +35,8 @@ function SignUpSignIn() {
           setPassword("")
           setEmail("")
           setConfirmPassword("")
+          //create a doc with user id as the following id
+          createDoc(user);
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -51,43 +54,51 @@ function SignUpSignIn() {
       setLoading(false)
     }
   }
+
+  function createDoc(){
+    //
+  }
+
   return (
-    <div className='Signup-wrapper'>
-      <h2 className='title'>Sign Up on <span style= {{color: "var(--theme)"}}> BudgetBuddy</span>
-      </h2>
-      <form>
-        <Input 
-          label={'Full Name'} 
-          state = {name} 
-          setState = {setName} 
-          plaseholder={'Example'}
-        />
-        <Input 
-          type = 'email'
-          label={'Email'} 
-          state = {email} 
-          setState = {setEmail} 
-          plaseholder={'example123@gmail.com'}
-        />
-        <Input 
-          type = 'password'
-          label={'Password'} 
-          state = {password} 
-          setState = {setPassword} 
-          plaseholder={'Example@123'}
-        />
-        <Input 
-          type = 'password'
-          label={'Confirm Password'} 
-          state = {confirmPassword} 
-          setState = {setConfirmPassword} 
-          plaseholder={'Example@123'}
-        />
-        <Button disabled={loading} text={loading? 'Loading ...' : 'SignUp using Email and Pasword'} onClick={signupWithEmail}/>
-        <p style= {{textAlign: 'center', margin:0}}>or</p>
-        <Button text={loading? 'Loading ...' :  'SignUp using Google'}  blue={true}/>
-      </form>
-    </div>
+    <>
+        <div className='signup-wrapper'>
+          <h2 className='title'>Sign Up on 
+            <span style= {{color: "var(--theme)"}}>BudgetBuddy</span>
+          </h2>
+          <form>
+            <Input 
+              label={'Full Name'} 
+              state = {name} 
+              setState = {setName} 
+              placeholder={"Example"}
+            />
+            <Input 
+              type = 'email'
+              label={'Email'} 
+              state = {email} 
+              setState = {setEmail} 
+              placeholder={'example123@gmail.com'}
+            />
+            <Input 
+              type = 'password'
+              label={'Password'} 
+              state = {password} 
+              setState = {setPassword} 
+              placeholder={'Example@123'}
+            />
+            <Input 
+              type = 'password'
+              label={'Confirm Password'} 
+              state = {confirmPassword} 
+              setState = {setConfirmPassword} 
+              placeholder={'Example@123'}
+            />
+            <Button disabled={loading} text={loading? 'Loading ...' : 'SignUp using Email and Pasword'} onClick={signupWithEmail}/>
+            <p style= {{textAlign: 'center', margin:0}}>or</p>
+            <Button text={loading? 'Loading ...' :  'SignUp using Google'}  blue={true}/>
+          </form>
+        </div>
+    </>
   )
 }
 

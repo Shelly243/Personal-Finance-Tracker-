@@ -1,7 +1,6 @@
 .btn {
     color: var(--theme);
     text-align: center;
-    width: 100%;
     margin: 0.5rem 0rem;
     padding: 0.5rem !important;
     background-color: #fff;

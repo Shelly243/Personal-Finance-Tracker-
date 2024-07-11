@@ -5,9 +5,10 @@ import Button from '../Button'
 import { toast } from 'react-toastify';
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword} 
-from 'firebase/auth'
-import {auth} from '../../firebase'
+  signInWithEmailAndPassword
+} from 'firebase/auth'
+import {auth , db} from '../../firebase'
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
 
 function SignUpSignIn() {
@@ -23,6 +24,7 @@ function SignUpSignIn() {
   function loginUsingEmail(){
     console.log('Email',email);
     console.log('Password', password);
+    setLoading(true);
 
      //Authenticate the user
     if(email != '' && password != ''){
@@ -32,16 +34,18 @@ function SignUpSignIn() {
           const user = userCredential.user;
           toast.success('User Logged In!')
           console.log("User Logged In",user)
+          setLoading(false);
           navigate("/dashboard");
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
+          setLoading(false);
           toast.error(errorMessage);
         });
     }else {
       toast.error('All fiels are mandatory')
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -60,13 +64,13 @@ function SignUpSignIn() {
         .then((userCredential) => {
         // Signed up 
           const user = userCredential.user;
-          console.log('User>>>',user)
-          toast.success('User Created!')
-          setLoading(false)
-          setName("")
-          setPassword("")
-          setEmail("")
-          setConfirmPassword("")
+          console.log('User>>>',user);
+          toast.success('User Created!');
+          setLoading(false);
+          setName("");
+          setPassword("");
+          setEmail("");
+          setConfirmPassword("");
           createDoc(user);
           navigate("/dashboard");
           //create a doc with user id as the following id
@@ -74,22 +78,46 @@ function SignUpSignIn() {
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          toast.error(errorMessage)
-          setLoading(false)
+          toast.error(errorMessage);
+          setLoading(false);
           // ..
         });
       } else{
           toast.error("Password and Confirm Password don't match")
-          setLoading(false)
+          setLoading(false);
       }
     }else {
       toast.error('All fiels are mandatory')
-      setLoading(false)
+      setLoading(false);
     }
   }
 
-  function createDoc(){
-    //
+  //create a doc
+  async function createDoc(user){
+    setLoading(true);
+    if(!user) return;
+
+    const userRef = doc(db, "user", user.uid);
+    const userData = await getDoc(userRef);
+
+    if(!userData.exists()){
+      try{
+        await setDoc(doc(db, "users", user.uid), {
+          name: user.displayName ? user.displayName : name,
+          email: user.email,
+          photoURL: user.photoURL ? user.photoURL : "",
+          createdAt: new Date(),
+        });
+        toast.success("Doc created!");
+        setLoading(false);
+      } catch (e){
+        toast.error(e.message);
+        setLoading(false);
+      }
+    } else {
+      toast.error("Doc already exicts");
+      setLoading(false);
+    }
   }
 
   return (

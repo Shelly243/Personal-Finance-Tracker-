@@ -5,9 +5,11 @@ import Button from '../Button'
 import { toast } from 'react-toastify';
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  signInWithPopup, 
+  GoogleAuthProvider
 } from 'firebase/auth'
-import {auth , db} from '../../firebase'
+import {auth ,provider, db} from '../../firebase'
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
 
@@ -64,7 +66,7 @@ function SignUpSignIn() {
         .then((userCredential) => {
         // Signed up 
           const user = userCredential.user;
-          console.log('User>>>',user);
+          console.log('user>>>',user);
           toast.success('User Created!');
           setLoading(false);
           setName("");
@@ -92,6 +94,39 @@ function SignUpSignIn() {
     }
   }
 
+  // SignUp-SignIn using google
+  function googleAuth() {
+    setLoading(true); // Start loading state
+
+    try {
+      provider.setCustomParameters({ prompt: 'select_account' });
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          const credential = GoogleAuthProvider.credentialFromResult(result);
+          const token = credential.accessToken;
+          // The signed-in user info.
+          const user = result.user;
+          console.log("user>>>", user);
+          createDoc(user); 
+          setLoading(false);
+          navigate("/dashboard");
+          toast.success("User Authenticated!");
+        })
+        .catch((error) => {
+          // Handle Errors here.
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          toast.error(errorMessage);
+          setLoading(false);
+        })
+    } catch (e) {
+      toast.error(e.message);
+      setLoading(false); // Stop loading state on exception
+    }
+  }
+
+
   //create a doc
   async function createDoc(user){
     setLoading(true);
@@ -102,7 +137,7 @@ function SignUpSignIn() {
 
     if(!userData.exists()){
       try{
-        await setDoc(doc(db, "users", user.uid), {
+        await setDoc(doc(db, "user", user.uid), {
           name: user.displayName ? user.displayName : name,
           email: user.email,
           photoURL: user.photoURL ? user.photoURL : "",
@@ -145,7 +180,7 @@ function SignUpSignIn() {
             />
             <Button disabled={loading} text={loading? 'Loading ...' : 'Login using Email and Pasword'} onClick={loginUsingEmail}/>
             <p className='p-login'>or</p>
-            <Button text={loading? 'Loading ...' :  'Login using Google'}  blue={true}/>
+            <Button onClick={googleAuth} text={loading? 'Loading ...' :  'Login using Google'}  blue={true}/>
             <p className='p-login' onClick={() => setLoginForm(!loginForm)}>Or Don't Have An Account? Click Here</p>
           </form>
         </div> 
@@ -185,7 +220,7 @@ function SignUpSignIn() {
             />
             <Button disabled={loading} text={loading? 'Loading ...' : 'SignUp using Email and Pasword'} onClick={signupWithEmail}/>
             <p className='p-login'>or</p>
-            <Button text={loading? 'Loading ...' :  'SignUp using Google'}  blue={true}/>
+            <Button onClick={googleAuth} text={loading? 'Loading ...' :  'SignUp using Google'}  blue={true}/>
             <p className='p-login' onClick={() => setLoginForm(!loginForm)}>Or Have An Account Already? Click Here</p>
           </form>
         </div>

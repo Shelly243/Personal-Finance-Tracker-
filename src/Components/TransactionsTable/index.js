@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { Table, Select, Radio } from "antd";
 import searchImg from '../../assets/search.svg';
+import { unparse, parse } from 'papaparse';
+import { toast } from 'react-toastify';
 
-function TransactionsTable({ transactions }) {
+function TransactionsTable({ 
+  transactions, 
+  addTransaction, 
+  fetchTransactions 
+}) {
 
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
@@ -37,10 +43,12 @@ function TransactionsTable({ transactions }) {
     },
   ];
 
+  //filter transactions
   let filteredTransactions = transactions.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase()) && item.type.includes(typeFilter)
   );
-
+  
+  //sort transaction
   let sortedTransactions = filteredTransactions.sort((a, b) => {
     if (sortKey === "date") {
       return new Date(a.date) - new Date(b.date);
@@ -50,6 +58,48 @@ function TransactionsTable({ transactions }) {
       return 0;
     }
   });
+
+  //export csv
+  function exportCSV(){
+    const csv = unparse(transactions, {
+      fields: ['Name', 'Amount', 'Tag', 'Type', 'Date'],
+    });
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "transactions.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  //import csv
+  function importFromCsv(event) {
+    event.preventDefault();
+    try {
+      parse(event.target.files[0], {
+        header: true,
+        complete: async function (results) {
+          // Now results.data is an array of objects representing your CSV rows
+          for (const transaction of results.data) {
+            // Write each transaction to Firebase, you can use the addTransaction function here
+            console.log("Transactions", transaction);
+            const newTransaction = {
+              ...transaction,
+              amount: parseFloat(transaction.amount),
+            };
+            await addTransaction(newTransaction, true);
+          }
+        },
+      });
+      toast.success("All Transactions Added");
+      fetchTransactions();
+      event.target.files = null;
+    } catch (e) {
+      toast.error(e.message);
+    }
+  }
 
   return (
     <div
@@ -118,14 +168,14 @@ function TransactionsTable({ transactions }) {
                         width: "400px",
                         }}
                     >
-                        <button className="btn">
+                        <button className="btn" onClick={exportCSV}>
                         Export to CSV
                         </button>
                         <label for="file-csv" className="btn btn-blue">
                         Import from CSV
                         </label>
                         <input
-                        
+                        onChange={importFromCsv}
                         id="file-csv"
                         type="file"
                         accept=".csv"

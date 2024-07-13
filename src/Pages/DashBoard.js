@@ -6,7 +6,6 @@ import AddIncomeModal from '../Components/Modals/AddIncome';
 import { addDoc, collection, getDocs, query } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import moment from 'moment';
 import { toast } from 'react-toastify';
 import TransactionsTable from '../Components/TransactionsTable';
 
@@ -48,21 +47,21 @@ function DashBoard() {
     addTransaction(newTransaction);
   };
 
-  async function addTransaction(transaction) {
+  async function addTransaction(transaction, many) {
     try {
       const docRef = await addDoc(
         collection(db, `users/${user.uid}/transactions`),
         transaction
       );
       console.log("Document written with ID: ", docRef.id);
-      toast.success("Transaction Added!");
+      if(!many) toast.success("Transaction Added!");
       let newArr = transactions;
       newArr.push(transaction);
       setTransactions(newArr);
       calculateBalance();
     } catch (e) {
       console.error("Error adding document: ", e);
-      toast.error("Couldn't add transaction");
+      if(!many) toast.error("Couldn't add transaction");
     }
   }
 
@@ -134,7 +133,11 @@ function DashBoard() {
             handleIncomeCancel={handleIncomeCancel}
             onFinish={onFinish}
           />
-          <TransactionsTable transactions={transactions}/>
+          <TransactionsTable 
+            transactions={transactions} 
+            addTransaction={addTransaction}
+            fetchTransactions={fetchTransactions}
+          />
         </>
       )}
     </div>

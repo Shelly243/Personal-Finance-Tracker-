@@ -15,6 +15,11 @@ function DashBoard() {
   const [user] = useAuthState(auth);
   const [isExpenseModalVisible, setIsExpenseModalVisible] = useState(false);
   const [isIncomeModalVisible, setIsIncomeModalVisible] = useState(false);
+  
+  const [income, setIncome] = useState(0);
+  const [expense, setExpense] = useState(0);
+  const [totalBalance, setTotalBalance] = useState(0);
+
   const showExpenseModal = () => {
     setIsExpenseModalVisible(true);
   };
@@ -50,6 +55,10 @@ function DashBoard() {
       );
       console.log("Document written with ID: ", docRef.id);
       toast.success("Transaction Added!");
+      let newArr = transactions;
+      newArr.push(transaction);
+      setTransactions(newArr);
+      calculateBalance();
     } catch (e) {
       console.error("Error adding document: ", e);
       toast.error("Couldn't add transaction");
@@ -77,6 +86,28 @@ function DashBoard() {
     setLoading(false);
   }
 
+  // Calculate the initial balance, income, and expenses
+  useEffect(() => {
+    calculateBalance();
+  }, [transactions]);
+
+  const calculateBalance = () => {
+    let incomeTotal = 0;
+    let expensesTotal = 0;
+
+    transactions.forEach((transaction) => {
+      if (transaction.type === "income") {
+        incomeTotal += transaction.amount;
+      } else {
+        expensesTotal += transaction.amount;
+      }
+    });
+
+    setIncome(incomeTotal);
+    setExpense(expensesTotal);
+    setTotalBalance(incomeTotal - expensesTotal);
+  };
+
   return (
     <div>
       <Header />
@@ -86,6 +117,9 @@ function DashBoard() {
       (
         <>
           <Cards 
+            income={income}
+            expense={expense}
+            totalBalance={totalBalance}
             showExpenseModal = {showExpenseModal}
             showIncomeModal = {showIncomeModal}
           />

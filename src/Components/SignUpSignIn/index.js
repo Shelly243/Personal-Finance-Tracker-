@@ -137,7 +137,7 @@ function SignUpSignIn() {
 
     if(!userData.exists()){
       try{
-        await setDoc(doc(db, "user", user.uid), {
+        await setDoc(doc(db, "users", user.uid), {
           name: user.displayName ? user.displayName : name,
           email: user.email,
           photoURL: user.photoURL ? user.photoURL : "",

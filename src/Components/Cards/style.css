@@ -4,6 +4,7 @@
     border-radius: 0.5rem;
     min-width: 400px;
     flex: 1;
+    font-family: "Montserrat", sans-serif;
 }
 
 .ant-card-head-title{

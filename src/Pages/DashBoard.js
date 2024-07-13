@@ -8,6 +8,7 @@ import { auth, db } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import moment from 'moment';
 import { toast } from 'react-toastify';
+import TransactionsTable from '../Components/TransactionsTable';
 
 function DashBoard() {
   const [transactions, setTransactions] = useState([]);
@@ -39,7 +40,7 @@ function DashBoard() {
   const onFinish = (values, type) => {
     const newTransaction = {
       type: type,
-      date: moment(values.date).format("YYYY-MM-DD"),
+      date: values.date.format("YYYY-MM-DD"),
       amount: parseFloat(values.amount),
       tag: values.tag,
       name: values.name,
@@ -67,7 +68,7 @@ function DashBoard() {
 
   useEffect(() => {
     fetchTransactions();
-  }, []);
+  }, [user]);
 
   async function fetchTransactions() {
     setLoading(true);
@@ -133,6 +134,7 @@ function DashBoard() {
             handleIncomeCancel={handleIncomeCancel}
             onFinish={onFinish}
           />
+          <TransactionsTable transactions={transactions}/>
         </>
       )}
     </div>

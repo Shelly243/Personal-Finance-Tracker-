@@ -54,14 +54,18 @@ function DashBoard() {
         transaction
       );
       console.log("Document written with ID: ", docRef.id);
-      if(!many) toast.success("Transaction Added!");
+      if(!many) {
+        toast.success("Transaction Added!");
+      }
       let newArr = transactions;
       newArr.push(transaction);
       setTransactions(newArr);
       calculateBalance();
     } catch (e) {
       console.error("Error adding document: ", e);
-      if(!many) toast.error("Couldn't add transaction");
+      if(!many) {
+        toast.error("Couldn't add transaction");
+      }
     }
   }
 

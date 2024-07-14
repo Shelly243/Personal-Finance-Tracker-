@@ -44,8 +44,10 @@ function TransactionsTable({
   ];
 
   //filter transactions
-  let filteredTransactions = transactions.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase()) && item.type.includes(typeFilter)
+  let filteredTransactions = transactions.filter(
+    (item) =>
+    item.name.toLowerCase().includes(search.toLowerCase()) && 
+    item.type.includes(typeFilter)
   );
   
   //sort transaction
@@ -61,8 +63,9 @@ function TransactionsTable({
 
   //export csv
   function exportCSV(){
-    const csv = unparse(transactions, {
-      fields: ['Name', 'Amount', 'Tag', 'Type', 'Date'],
+    var csv = unparse({
+      fields: ['name', 'amount', 'tag', 'type', 'date'],
+      data: transactions, 
     });
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);

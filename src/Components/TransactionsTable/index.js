@@ -107,17 +107,16 @@ function TransactionsTable({
   return (
     <div
       style={{
-        width: "100%",
-        padding: "0rem 2rem",
+        padding: "2rem",
+        margin: "1rem",
       }}
     >
         <div
             style={{
-            display: "flex",
-            justifyContent: "space-between",
-            gap: "1rem",
-            alignItems: "center",
-            marginBottom: "1rem",
+              display: "flex",
+              justifyContent: "space-between",
+              gap: "1rem",
+              alignItems: "center",
             }}
         >
             <div className="input-flex">
@@ -152,7 +151,7 @@ function TransactionsTable({
                     marginBottom: "1rem",
                 }}
                 >
-                    <h2>My Transactions</h2>
+                    <h2  style={{padding: '0rem 1rem'}}>My Transactions</h2>
 
                     <Radio.Group
                         className="input-radio"

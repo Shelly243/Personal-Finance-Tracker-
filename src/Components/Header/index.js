@@ -37,10 +37,10 @@ function Header() {
     <div className="navbar">
       <p className='logo'>BudgetBuddy</p>
       {user && (
-        <div style={{display: 'flex', alignItems: 'center', gap: '0.75rem'}}>
+        <div style={{display: 'flex', alignItems: 'center', gap: '0.9rem'}}>
           <img
             src={user.photoURL ? user.photoURL : userImg}
-            style={{borderRadius: '50%', height: '1.6rem', width: '1.6rem'}}
+            style={{borderRadius: '50%', height: '1.8rem', width: '1.8rem'}}
           />
           <p className='logo link' onClick={logoutFnc}>Logout</p>
         </div>

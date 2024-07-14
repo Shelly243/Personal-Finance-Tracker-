@@ -1,4 +1,10 @@
-.wrapper 
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 90vh;
+}
 .charts-wrapper{
     display: flex;
     justify-content: center;

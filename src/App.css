@@ -5,19 +5,18 @@
     width: 100vw;
     height: 90vh;
 }
+
 .charts-wrapper{
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100vw;
-    height: 90vh;
+    height: 90vh auto;
+    margin: 1rem 3rem;
+    gap: 2rem;
 }
 
-.charts-wrapper{
-    justify-content: space-between;
-    height: auto;
-    padding: 2rem;
+.chart-container {
+    padding: 1.5rem;
     border-radius: 0.5rem;
     box-shadow: var(--shadow);
-    margin: 2rem;
 }

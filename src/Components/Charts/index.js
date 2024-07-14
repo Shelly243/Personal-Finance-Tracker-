@@ -34,26 +34,28 @@ function ChartComponents({sortedTransactions}) {
 
     const config = {
         data: data,
-        width:100,
+        width: 900,
+        height: 400, 
         xField: 'data',
         yField: 'amount',
     };
 
     const spendingConfig = {
         data: Object.values(finalSpendings),
-        width: 100,
+        width: 400,
+        height: 400, 
         angleField: 'amount',
         colorField: 'tag',
     };
 
   return (
     <div className='charts-wrapper'>
-        <div>
+        <div className='chart-container'>
             <h2 style={{marginTop: 0}}>Your Analytics</h2>
             <Line {...config}/>
         </div>
-        <div>
-            <h2>Your Spending</h2>
+        <div className='chart-container'>
+            <h2 style={{marginTop: 0}}>Your Spending</h2>
             <Pie {...spendingConfig} />
         </div>
     </div>
